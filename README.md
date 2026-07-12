@@ -1,36 +1,46 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Maison Noir — Élixir Noir
 
-## Getting Started
+A cinematic, scroll-driven 3D perfume showcase. A heart-shaped rose-glass bottle rendered in real-time WebGL, choreographed across four scroll beats with giant editorial typography.
 
-First, run the development server:
+**Live:** [perfume-product-tawny.vercel.app](https://perfume-product-tawny.vercel.app/)
+
+![Maison Noir — Élixir Noir hero](docs/screenshot.png)
+
+## The experience
+
+1. **Hero** — the bottle rises through viewport-filling MAISON / NOIR display type
+2. **Élixir Noir** — the bottle drifts right as the name bleeds in from the left edge
+3. **Composition** — camera dollies close; Top / Heart / Base notes reveal as an editorial list, with a giant "NOIR" *physically refracting through the glass* on an in-scene type plane
+4. **Discover** — a full 360° turn under a rim-light halo, into the CTA
+
+Plus: branded preloader with real load progress, custom dot-and-ring cursor, magnetic CTA, pointer-parallax camera, film grain, floating dust particles, and a scroll-progress hairline with clickable section markers.
+
+## Tech
+
+| Layer | Choice |
+|---|---|
+| Framework | Next.js 16 (App Router, Turbopack) + React 19 + TypeScript |
+| 3D | Three.js (vanilla) — `GLTFLoader`, `MeshPhysicalMaterial` transmission glass, `EffectComposer` + `UnrealBloomPass`, in-scene `CanvasTexture` type plane |
+| Animation | GSAP ScrollTrigger (one scrubbed master timeline) + `@gsap/react` |
+| Scroll | Lenis, driven from the GSAP ticker (single unified loop) |
+| Styling | Tailwind v4 + a token-driven theme system (midnight-platinum / oxblood, switchable in `lib/palette.ts`) |
+
+### Architecture notes
+
+- The bottle sits in a `pivot → spinner → model` group hierarchy: GSAP owns the pivot (scroll choreography), the render loop owns the spinner (idle spin + bob) — transforms compose, so they never fight.
+- The canvas is opaque and `position: fixed`; the background gradient lives *in-scene* (bloom doesn't preserve canvas alpha).
+- Mobile gets a dedicated performance path: half-resolution transmission, no bloom, smaller textures, solid scrims instead of backdrop blur, and a smaller bottle scale for portrait framing.
+
+## Run locally
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# → http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Build: `npm run build` · Lint: `npx eslint .`
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Credits
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Perfume bottle model via Sketchfab (glTF 2.0), served from `public/models/perfume.glb`.
