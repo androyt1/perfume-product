@@ -6,6 +6,22 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: __dirname,
   },
+  // public/ assets aren't fingerprinted, so Next defaults them to
+  // max-age=0. The GLB never changes in place (rename on swap, e.g.
+  // perfume-v2.glb), so let browsers cache it for a year.
+  async headers() {
+    return [
+      {
+        source: "/models/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;
